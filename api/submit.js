@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ status:"error", message:"Unauthorized" });
   }
 
-  const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
+  const GOOGLE_SCRIPT_URL ="https://script.google.com/macros/s/AKfycbzJOlas9Qv3UgsDCZ55ct6vDvLxOYlP0t2_aVPL18v6PPThc_ZevhatINv32NqU-0_Plg/exec";
 
   // اعتبارسنجی ساده فرم
   const { service, name, phone, plate, lat, lon } = req.body;
