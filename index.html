@@ -4,94 +4,12 @@
 <meta charset="UTF-8">
 <title>درخواست یدک‌کش / مکانیک سیار</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
 <style>
-/* Reset و پایه */
-* { box-sizing: border-box; margin:0; padding:0; }
-body {
-  font-family: 'Vazir', Tahoma, sans-serif;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding: 40px 10px;
-}
-
-/* فرم */
-form {
-  width: 100%;
-  max-width: 480px;
-  background: #fff;
-  padding: 30px 25px;
-  border-radius: 20px;
-  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-form:hover { 
-  transform: translateY(-5px); 
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-}
-
-h3 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #343a40;
-  font-size: 1.7em;
-  letter-spacing: 0.5px;
-}
-
-/* ورودی‌ها */
-input, select, textarea, button {
-  width: 100%;
-  margin-top: 12px;
-  padding: 14px 12px;
-  border-radius: 10px;
-  border: 1px solid #ced4da;
-  font-size: 1em;
-  transition: border 0.3s, box-shadow 0.3s;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: #20c997;
-  box-shadow: 0 0 8px rgba(32,199,151,0.3);
-  outline: none;
-}
-select { appearance: none; cursor: pointer; }
-textarea { resize: vertical; min-height: 90px; }
-
-/* دکمه‌ها */
-button {
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 12px;
-  transition: all 0.3s;
-}
-button.loc { 
-  background: #0d6efd; 
-  color: #fff; 
-}
-button.loc:hover { background: #0b5ed7; }
-button.submit { 
-  background: #20c997; 
-  color: #fff; 
-}
-button.submit:hover { background: #1ca885; }
-
-/* نقشه */
-#map {
-  height: 320px;
-  margin-top: 15px;
-  display: none;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-/* موبایل */
-@media(max-width:500px){
-  form { padding: 25px 15px; }
-}
+body { font-family:tahoma; background:#f2f2f2; }
+form { max-width:420px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; }
+input, select, textarea, button { width:100%; margin-top:10px; padding:10px; }
+button { background:#28a745; color:#fff; border:none; }
+button.loc { background:#007bff; }
 </style>
 </head>
 <body>
@@ -105,75 +23,36 @@ button.submit:hover { background: #1ca885; }
     <option value="مکانیک سیار">مکانیک سیار</option>
   </select>
 
-  <input name="name" placeholder="نام و نام خانوادگی" required>
+  <input name="name" placeholder="نام" required>
   <input name="phone" placeholder="شماره تماس" required>
-  <input name="plate" placeholder="شماره پلاک خودرو" required>
+  <input name="plate" placeholder="شماره پلاک" required>
   <textarea name="desc" placeholder="توضیح (اختیاری)"></textarea>
 
   <input type="hidden" name="lat" id="lat">
   <input type="hidden" name="lon" id="lon">
 
-  <button type="button" class="loc" onclick="showMap()">📍 انتخاب موقعیت روی نقشه</button>
-  <div id="map"></div>
-
-  <button type="submit" class="submit">ارسال درخواست</button>
+  <button type="button" class="loc" onclick="getLocation()">📍 ثبت موقعیت</button>
+  <button type="submit">ارسال درخواست</button>
 </form>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-let map, marker;
-
-function showMap(){
-  const mapDiv = document.getElementById("map");
-  mapDiv.style.display = "block";
-
-  if(!map){
-    map = L.map('map').setView([35.7, 51.4], 13); // مرکز تهران
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    map.on('click', function(e){
-      const {lat, lng} = e.latlng;
-
-      if(marker) map.removeLayer(marker);
-      marker = L.marker([lat,lng]).addTo(map);
-
-      document.getElementById("lat").value = lat.toFixed(6);
-      document.getElementById("lon").value = lng.toFixed(6);
-    });
-  }
+function getLocation(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    lat.value = pos.coords.latitude;
+    lon.value = pos.coords.longitude;
+    alert("موقعیت ثبت شد ✅");
+  },()=>alert("GPS فعال نشد"));
 }
 
 document.getElementById("form").onsubmit = async e => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target));
-
-  if(!data.lat || !data.lon){
-    alert("لطفاً موقعیت خود را روی نقشه انتخاب کنید 📍");
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/submit",{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify(data)
-    });
-    const result = await res.json();
-    if(result.status === "ok") {
-      alert("درخواست شما با موفقیت ثبت شد ✅");
-      e.target.reset();
-      document.getElementById("map").style.display = "none";
-      if(marker) marker.remove();
-    } else {
-      alert("خطا: " + result.message);
-    }
-  } catch(err) {
-    alert("خطای شبکه: " + err.message);
-  }
+  const res = await fetch("/api/submit",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(data)
+  });
+  alert("درخواست ثبت شد ✅");
 };
 </script>
 
