@@ -1,15 +1,54 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
 <title>درخواست یدک‌کش / مکانیک سیار</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <style>
-body { font-family:tahoma; background:#f2f2f2; }
-form { max-width:420px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; }
-input, select, textarea, button { width:100%; margin-top:10px; padding:10px; }
-button { background:#28a745; color:#fff; border:none; }
-button.loc { background:#007bff; }
+body {
+  font-family: 'Tahoma', sans-serif;
+  background: linear-gradient(135deg, #f2f2f2, #e0e0e0);
+  margin:0; padding:0;
+}
+form {
+  max-width:450px;
+  margin:40px auto;
+  background:#fff;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+form:hover { transform: translateY(-3px); }
+h3 {
+  text-align:center;
+  margin-bottom:20px;
+  color:#333;
+  font-size:1.6em;
+}
+input, select, textarea, button {
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:1em;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #28a745;
+  box-shadow:0 0 5px rgba(40,167,69,0.4);
+  outline:none;
+}
+textarea { resize: vertical; min-height:80px; }
+button {
+  border:none; cursor:pointer; font-weight:bold; margin-top:10px; transition:0.3s;
+}
+button:hover { opacity:0.9; }
+button.loc { background:#007bff; color:#fff; }
+button.submit { background:#28a745; color:#fff; }
+#map { height:300px; margin-top:10px; display:none; border-radius:8px; }
 </style>
 </head>
 <body>
@@ -31,28 +70,66 @@ button.loc { background:#007bff; }
   <input type="hidden" name="lat" id="lat">
   <input type="hidden" name="lon" id="lon">
 
-  <button type="button" class="loc" onclick="getLocation()">📍 ثبت موقعیت</button>
-  <button type="submit">ارسال درخواست</button>
+  <button type="button" class="loc" onclick="showMap()">📍 انتخاب موقعیت روی نقشه</button>
+  <div id="map"></div>
+
+  <button type="submit" class="submit">ارسال درخواست</button>
 </form>
 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-function getLocation(){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    lat.value = pos.coords.latitude;
-    lon.value = pos.coords.longitude;
-    alert("موقعیت ثبت شد ✅");
-  },()=>alert("GPS فعال نشد"));
+let map, marker;
+
+function showMap(){
+  const mapDiv = document.getElementById("map");
+  mapDiv.style.display = "block";
+
+  if(!map){
+    map = L.map('map').setView([35.7, 51.4], 13); // مرکز تهران به عنوان مثال
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    map.on('click', function(e){
+      const {lat, lng} = e.latlng;
+
+      if(marker) map.removeLayer(marker);
+      marker = L.marker([lat,lng]).addTo(map);
+
+      document.getElementById("lat").value = lat;
+      document.getElementById("lon").value = lng;
+    });
+  }
 }
 
 document.getElementById("form").onsubmit = async e => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target));
-  const res = await fetch("/api/submit",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(data)
-  });
-  alert("درخواست ثبت شد ✅");
+
+  if(!data.lat || !data.lon){
+    alert("لطفاً موقعیت خود را روی نقشه انتخاب کنید 📍");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/submit",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(data)
+    });
+    const result = await res.json();
+    if(result.status === "ok") {
+      alert("درخواست ثبت شد ✅");
+      e.target.reset();
+      document.getElementById("map").style.display = "none";
+      if(marker) marker.remove();
+    } else {
+      alert("خطا: " + result.message);
+    }
+  } catch(err) {
+    alert("خطای شبکه: " + err.message);
+  }
 };
 </script>
 
