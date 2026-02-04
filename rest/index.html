@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>درخواست یدک‌کش / مکانیک سیار</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family:tahoma; background:#f2f2f2; }
+form { max-width:420px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; }
+input, select, textarea, button { width:100%; margin-top:10px; padding:10px; }
+button { background:#28a745; color:#fff; border:none; }
+button.loc { background:#007bff; }
+</style>
+</head>
+<body>
+
+<form id="form">
+  <h3>درخواست خدمات</h3>
+
+  <select name="service" required>
+    <option value="">نوع خدمات</option>
+    <option value="یدک‌کش">یدک‌کش</option>
+    <option value="مکانیک سیار">مکانیک سیار</option>
+  </select>
+
+  <input name="name" placeholder="نام" required>
+  <input name="phone" placeholder="شماره تماس" required>
+  <input name="plate" placeholder="شماره پلاک" required>
+  <textarea name="desc" placeholder="توضیح (اختیاری)"></textarea>
+
+  <input type="hidden" name="lat" id="lat">
+  <input type="hidden" name="lon" id="lon">
+
+  <button type="button" class="loc" onclick="getLocation()">📍 ثبت موقعیت</button>
+  <button type="submit">ارسال درخواست</button>
+</form>
+
+<script>
+function getLocation(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    lat.value = pos.coords.latitude;
+    lon.value = pos.coords.longitude;
+    alert("موقعیت ثبت شد ✅");
+  },()=>alert("GPS فعال نشد"));
+}
+
+document.getElementById("form").onsubmit = async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch("/api/submit",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(data)
+  });
+  alert("درخواست ثبت شد ✅");
+};
+</script>
+
+</body>
+</html>
