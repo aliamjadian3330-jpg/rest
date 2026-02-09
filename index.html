@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ناجی راه|خدمات یدکش،مکانیک وبرق خودرو</title>
+    <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#22c55e">
+
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/iransans@6.2.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="stylee.css">
+    <link rel="shortcut icon" href="logo7.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'IRANSans';
+  src: url('./IRANSans-Regular.woff2') format('woff2'),
+       url('./IRANSans-Regular.woff') format('woff'),
+       url('./IRANSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* اعمال فونت ایرانسل برای کل سایت و مودال */
+body, .call-alert-box, .call-alert-box h3, .call-alert-box p, .emergency-call, .btn-call, .btn-online, .special-title{
+  font-family: 'IRANSans', sans-serif;
+}
+</style>
+
+</head>
+<!-- تماس -->
+<a href="tel:0902000000"
+   class="emergency-call"
+   title="تماس فوری"
+   onclick="openCallAlert(event)">
+  <span class="pulse pulse1"></span>
+  <span class="pulse pulse2"></span>
+  <img src="./phone-call.png" alt="تماس">
+</a>
+
+<div class="call-alert" id="callAlert">
+  <div class="call-alert-box">
+    <img style="width:3rem;" src="./logo7.png"/>
+    <p>
+      در صورت نیاز، می‌توانید به جای تماس تلفنی از درخواست آنلاین استفاده کنیدآیا قصد تماس تلفنی دارید؟
+    </p>
+    <div class="call-alert-actions">
+      <button class="btn-call" onclick="makeCall()">تماس تلفنی</button>
+      <button class="btn-online" onclick="closeCallAlert()">درخواست آنلاین</button>
+    </div>
+  </div>
+</div>
+
+<!-- FontAwesome CDN برای آیکون‌ها -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> 
+<body>
+  <header class="header_top">
+  <div class="header_inner">
+    <!-- لوگو -->
+    <div class="logo">
+      <img src="logo7.png" alt="ناجی راه" width="90">
+    </div>
+
+    <!-- متن و شعار -->
+    <div class="header_text">
+      <h2 class="header_subtitle road-text">جعبه ابزار آنلاین برای سفر امن و راحت</h2>
+      <p>«نگران نباش، امداد نزدیک‌تر از همیشه است.»</p>
+    </div>
+
+    <!-- ناوبری دسکتاپ -->
+    <nav class="nav_menu">
+      <a href="#home" class="nav_link active">خانه</a>
+      <a href="#services" class="nav_link">خدمات</a>
+      <a href="#portfolio" class="nav_link">نمونه‌کارها</a>
+      <a href="#about" class="nav_link">درباره ما</a>
+      <a href="#contact" class="nav_link btn_nav">تماس</a>
+    </nav>
+
+    <!-- Hamburger موبایل -->
+    <div class="menu_toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</header>
+
+<!-- Fullscreen Drawer موبایل -->
+<div class="full_drawer" id="fullDrawer">
+  <button class="drawer_close" id="drawerClose">×</button>
+  <nav class="drawer_nav">
+    <a href="#" class="drawer_link active">خانه</a>
+    <a href="#services" class="drawer_link"> خدمات ها</a>
+    <a href="#portfolio" class="drawer_link">نمونه‌کارها</a>
+    <a href="#about" class="drawer_link">درباره ما</a>
+    <a href="#contact" class="drawer_link btn_drawer">تماس</a>
+  </nav>
+</div>
+
+<!-- Overlay -->
+<div class="drawer_overlay" id="drawerOverlay"></div>
+
+<!-- پنل بالای سایت -->
+<div class="top-panel-tabs">
+  <button class="tab-btn" data-tab="tow">یدک‌کش</button>
+  <button class="tab-btn" data-tab="mechanic">مکانیک</button>
+  <button class="tab-btn" data-tab="electric">برق‌کار</button>
+  <button class="tab-btn" data-tab="about">درباره ناجی راه</button>
+</div>
+<!-- اسکرول نرم -->
+<style>
+  .top-panel-tabs {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.top-panel-tabs::-webkit-scrollbar { display: none; }
+
+</style>
+<!-- محتواهای تب‌ها -->
+<div class="info-tab">
+
+  <!-- تب برق‌کار -->
+  <div class="tab-content active" id="electric">
+    <h3>ثبت‌نام برق‌کار</h3>
+    <p style="color: green;">
+      این بخش مخصوص افرادی است که در زمینه برق فعالیت می‌کنند. 
+      شما می‌توانید با ثبت‌نام، دسترسی به درخواست‌های آنلاین برق‌کاری داشته باشید 
+      و خدمات خود را به کاربران ارائه دهید.
+      <span style="color:red;">(بزودی فعال میشود)</span>
+    </p>
+    <p style="color: green;">
+      اگر آماده هستید، روی دکمه زیر کلیک کنید تا فرم ثبت‌نام را پر کنید:
+      <br>
+      <a class="sign-tab" href="electric-signup.html" target="_blank">ثبت نام</a>
+    </p>
+  </div>
+
+  <!-- تب یدک‌کش -->
+  <div class="tab-content" id="tow">
+    <h3>ثبت‌نام یدک‌کش</h3>
+    <p style="color: green;">
+      این قسمت برای افرادی است که خدمات حمل خودرو یا یدک‌کشی ارائه می‌کنند. 
+      با ثبت‌نام در این بخش، می‌توانید درخواست‌های آنلاین یدک‌کشی را دریافت کنید 
+      و سریع‌تر به کاربران خدمت‌رسانی کنید.
+    </p>
+    <p style="color: green;">
+      برای شروع و دریافت درخواست‌ها، فرم ثبت‌نام را پر کنید:
+      <br>
+      <a class="sign-tab" href="tow-signup.html" target="_blank">ثبت نام</a>
+    </p>
+  </div>
+
+  <!-- تب مکانیک -->
+  <div class="tab-content" id="mechanic">
+    <h3>ثبت‌نام مکانیک</h3>
+    <p style="color: green;">
+      این بخش مخصوص مکانیک‌هایی است که می‌خواهند خدمات تعمیر و نگهداری خودرو ارائه دهند. 
+      شما می‌توانید با ثبت‌نام، درخواست‌های تعمیر آنلاین را دریافت کنید 
+      و به صورت حرفه‌ای خدمات خود را ارائه دهید.
+      <span style="color:red;">(بزودی فعال میشود)</span>
+    </p>
+    <p style="color: green;">
+      برای آماده شدن جهت دریافت درخواست‌ها، فرم ثبت‌نام را پر کنید:
+      <br>
+      <a class="sign-tab" href="mechanic-signup.html" target="_blank">ثبت نام</a>
+    </p>
+  </div>
+
+</div>
+
+  <div class="tab-content" id="about">
+  <div class="naji-intro">
+  <strong>ناجی راه</strong><br>
+  «ناجی راه» یک جعبه ابزار آنلاین برای سفرهای امن و راحت است. هدف ما این است که در هر سفر، احساس امنیت و آرامش داشته باشید و در مواقع نیاز، سریع‌ترین دسترسی به خدمات امدادی و اطلاعات ضروری را داشته باشید. با «ناجی راه» همیشه نگران نباشید، امداد نزدیک‌تر از همیشه است.
+</div>
+
+   </div>
+</div>
+
+    <header class="header">
+        <div class="header_box">
+            <h1>
+               <span class="font_Naji"></span><br>
+               </h1>
+               <h1 style="font-weight:bolder; font-size:35px;">
+                <span style="color:#00FF00 ;"></span>
+            </h1>
+        </div>
+    </header>
+    <!-- تایپی خدمات -->
+    <div class="text_info">
+  <span id="typewriter"></span>
+</div>
+</section>
+<!-- ............................................................................. -->
+<!-- شروع معرفي پلتفرم ناجي راه -->
+<article>
+    <div class="article_piccher">
+      <div class="article_image">
+        <img src="./imging3 - Copy.png" alt="خرابي خودرو">
+      </div>
+      <div class="article_text">
+        <h1 class="article_text_one">ناجي راه</h1>
+        <h2 class="article_text_two">
+          تجربه‌ي سفري راحت‌تر و سريع‌تر و<br>ايمن‌تر با اپليکيشن <span style="color:rgba(137, 0, 0, 0.827);">ناجي راه</span>
+        </h2>
+        <p class="article_text_tree">
+          اين سرويس با هدف کاهش زمان انتظار، افزايش شفافيت در قيمت و دسترسي آسان به خدمات يدک‌کش، برق خودرو و مکانيکي راه‌اندازي شده است.
+          هدف ما از راه‌اندازي اين پلتفرم، نبود يک راهکار ساده، سريع و قابل اعتماد براي دريافت خدمات امدادي خودرو، مخصوصاً در جاده‌ها و شرايط بحراني بود.
+          در بسياري از مواقع، رانندگان يا اطلاعي از خدمات اطراف ندارند، يا بايد از طريق تماس‌هاي متعدد و با عدم قطعيت بالا مشکل را حل کنند. «ناجي راه» اين فرآيند را ديجيتالي، سريع و کاربرمحور طراحي کرده است.
+        </p>
+      </div>
+    </div>
+</article>
+<!-- ......................................level........................................ -->
+<article>
+    <div class="web">
+      <div class="article_box">
+        <div class="article_img2">
+          <div class="article_image_wrapper">
+            <img src="imging4.png" alt="مشکلات برق خودرو">
+          </div>
+          <div class="article_text2">
+            <p>
+              ? پشتيباني کامل از مشکلات برق در بيابان:  
+              باتري تمام شد؟ برق‌کار سيار ما با دستگاه‌هاي پرتابل و استارتر فوري اعزام مي‌شود.  
+              دينام مشکل دارد؟ تشخيص سريع در محل و اعلام وضعيت واقعي (تعمير يا حمل فوري).  
+              فيوز سوخت؟ چراغ خاموش شد؟ قطعات استاندارد همراه با برق‌کار وجود دارد.  
+              اتصالات قطع يا معيوب‌اند؟ برق‌کاران ما با ابزار کامل و تجربه‌ي جاده‌اي، مشکل را سريع حل مي‌کنند.  
+              استارت نمي‌زند؟ ما فقط تشخيص نمي‌دهيم؛ در محل راه‌اندازي مي‌کنيم.  
+              <br><br>
+              ?? تفاوت ما:  
+              برق‌کاران ما از قبل آموزش ديده‌اند براي شرايط جاده‌اي و بياباني، نه فقط تعمير در مغازه.  
+              ابزار کامل، باتري پرتابل، استارت اضطراري و قطعات مصرفي هميشه همراه برق‌کار است.  
+              موقعيت مکاني راننده دقيق تشخيص داده مي‌شود؛ نيازي به توضيح لوکيشن نيست.  
+              زمان رسيدن نيرو به شما به‌صورت زنده نمايش داده مي‌شود.  
+              <br><br>
+              ?? با «ناجي راه»، مشکلات برقي در بيابان پايان مي‌يابد؛  
+              نه توقفي، نه نگراني، نه خاموشي.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+<!-- پايان معرفي پلتفرم ناجي راه -->
+<!-- شروع فوتر -->
+<section class="why-us">
+  <h2>چرا ما؟</h2>
+  <div class="why-us-cards">
+    <div class="why-card">
+      <img src="./3.gif"/>
+      <h3>پشتیبانی سریع</h3>
+      <p>تیم ما در سریع‌ترین زمان ممکن آماده خدمات‌رسانی به شماست.</p>
+    </div>
+    <div class="why-card">
+      <img src="./4.gif"/>
+      <h3>امنیت بالا</h3>
+      <p>تمام اطلاعات شما با بالاترین استانداردهای امنیتی محافظت می‌شود.</p>
+    </div>
+    <div class="why-card">
+      <img src="./2.gif"/>
+      <h3>رضایت مشتری</h3>
+      <p>کیفیت خدمات ما باعث رضایت حداکثری مشتریان شده است.</p>
+    </div>
+    <div class="why-card">
+      <img src="./1.gif"/>
+      <h3>خدمات 24/7</h3>
+      <p>هر زمان که نیاز داشتید، ما آماده ارائه خدمات هستیم.</p>
+    </div>
+  </div>
+</section>
+<section class="feedback-section">
+  <div class="feedback-container">
+    <h2>نظر خود را با ما در میان بگذارید</h2>
+    <p>ما دوست داریم تجربه شما را بهتر کنیم. لطفاً بازخورد خود را ثبت کنید.</p>
+
+    <form class="feedback-form" id="feedback-form">
+      <div class="input-group">
+        <input type="text" name="name" placeholder="نام و نام خانوادگی" required>
+        <i class="fas fa-user"></i>
+      </div>
+
+      <div class="input-group">
+        <input type="email" name="email" placeholder="ایمیل" required>
+        <i class="fas fa-envelope"></i>
+      </div>
+
+      <div class="input-group">
+        <textarea name="message" placeholder="نظر شما" required></textarea>
+        <i class="fas fa-comment"></i>
+      </div>
+
+      <button type="submit">ارسال بازخورد</button>
+    </form>
+  </div>
+</section>
+
+<!-- Toast  -->
+<div class="toast" id="toast">
+  <span id="toast-message"></span>
+  <div class="toast-progress" id="toast-progress"></div>
+</div>
+
+<script>
+const form = document.getElementById("feedback-form");
+const toast = document.getElementById("toast");
+const toastMessage = document.getElementById("toast-message");
+const toastProgress = document.getElementById("toast-progress");
+
+// لینک Web App نسخه ۴
+const scriptURL = "https://script.google.com/macros/s/AKfycbwNGq092JGbDadGzl2CCFNqzdOqhwKy5WLMBPGQrb5PkL2_8xBMZ6Td9x69qHBrrCU2aQ/exec";
+
+// تابع نمایش Toast
+function showToast(message, duration = 3000) {
+  toastMessage.textContent = message;
+  toast.classList.add("show");
+  toastProgress.style.transition = `transform ${duration}ms linear`;
+  toastProgress.style.transform = "scaleX(0)";
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toastProgress.style.transition = "none";
+    toastProgress.style.transform = "scaleX(1)";
+  }, duration);
+}
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+
+  showToast("در حال ارسال ...", 1500);
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: new FormData(form),
+    mode: "cors"
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === "SUCCESS") {
+      showToast("پیام شما با موفقیت ثبت شد ✅", 3500);
+      form.reset();
+    } else {
+      showToast("خطا در ارسال پیام ❌: " + data.message, 4000);
+    }
+  })
+  .catch(err => {
+    showToast("خطا در ارسال پیام ❌: " + err, 4000);
+  });
+});
+</script>
+ <!-- چتینا پشتیبانی -->
+  <script>window.addEventListener("load",(function(){var t="698714bed0a9750221612e20";window.chatina={bId:t};var e=document.createElement("div");e.id="chatina-root",document.body.appendChild(e);var n=document.createElement("link");n.rel="stylesheet",n.href="https://cdn.chatina.ai/static/widget.css",n.crossOrigin="anonymous",document.head.appendChild(n);var a=document.createElement("script");a.src="https://cdn.chatina.ai/static/widget.js",a.crossOrigin="anonymous",document.head.appendChild(a)}));</script>
+<!-- ================== Footer Modern & Professional ================== -->
+<footer  class="footer">
+  <div class="footer-links">
+    <a href="#">کار و عملکرد ناجي راه</a>
+    <a href="#">فرصت‌هاي شغلي</a>
+    <a href="#">شرايط و قوانين</a>
+    <a href="#">سوالات متداول</a>
+    <a href="#">درباره ما</a>
+    <a href="#">تماس با ما</a>
+  </div>
+  <div class="social-icons">
+    <a href="https://wa.me/yourNumber" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://instagram.com/yourPage" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://youtube.com/yourChannel" target="_blank"><i class="fab fa-youtube"></i></a>
+    <a href="https://t.me/yourTelegram" target="_blank"><i class="fab fa-telegram"></i></a>
+    <a href="https://twitter.com/yourProfile" target="_blank"><i class="fab fa-twitter"></i></a>
+  </div>
+  <p>&copy; 2026 ناجی راه. تمام حقوق محفوظ است.</p>
+ </footer>
+<!-- نوار پایین ثابت -->
+<div class="bottom-bar">
+  <!-- سرویس اول: اسنپ -->
+  <div class="service">
+    <img src="./construction.png" alt="مکانیک">
+    <span style="color:black;">مکانیک</span>
+  </div>
+
+  <!-- سرویس دوم: غذا -->
+  <div class="service">
+    <img src="./vehicle.png" alt="یدکش">
+    <span style="color:black;">یدکش</span>
+  </div>
+
+  <!-- سرویس سوم: سوپرمارکت -->
+  <div class="service">
+    <img src="./petrol-pump.png" alt="سوخت">
+    <span style="color:black;"> سوخت رسانی</span>
+  </div>
+</div>
+
+<!-- زیبایی علرت -->
+ <div id="toast" class="toast">
+  <div class="toast-progress"></div>
+</div>
+
+<script src="js.js" defer></script>
+</body>
+</html>
