@@ -113,6 +113,124 @@ footer-links{
 .top-panel-tabs::-webkit-scrollbar { display: none; }
 </style>
 
+<style>
+.tech-alert {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 340px;
+    max-width: 90%;
+    background: #ffffff;
+    border-radius: 12px;
+    border-left: 10px solid #4caf50; /* حاشیه سبز سمت چپ */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.18), 0 5px 10px rgba(0,0,0,0.08);
+    padding: 22px 25px;
+    font-family: 'IRANSans', sans-serif;
+    direction: rtl;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.tech-alert.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tech-alert h4 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2e2e2e;
+}
+
+.tech-alert p {
+    margin: 0 0 18px;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.tech-alert button {
+    background: #4caf50;
+    border: none;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tech-alert button:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .tech-alert {
+        width: 90%;
+        bottom: 20px;
+        right: 5%;
+        padding: 18px 20px;
+    }
+    .tech-alert h4 { font-size: 16px; }
+    .tech-alert p { font-size: 13px; }
+    .tech-alert button { font-size: 13px; padding: 6px 14px; }
+}
+</style>
+
+<script>
+const tips = [
+    // نکات عمومی فنی
+  "قبل از هر تعمیر، حتماً برق را قطع کن.",
+  "ابزار مناسب، نصف کار تعمیر است.",
+  "استفاده از دستورالعمل سازنده همیشه اولویت دارد.",
+  "شل بودن تسمه باعث خرابی زودهنگام می‌شود.",
+  "تمیز کردن منظم قطعات عمر آنها را افزایش می‌دهد.",
+  
+  // نکات یدک و قطعات
+  "قطعات یدکی اصلی همیشه بهتر از نمونه ارزان هستند.",
+  "قبل از نصب یدک، مطمئن شو که سازگار با دستگاه است.",
+  "گریس و روانکار مناسب، عمر یاتاقان‌ها را افزایش می‌دهد.",
+  "شماره سریال قطعه را همیشه بررسی کن.",
+  "نگهداری یدک‌ها در جای خشک و تمیز، عمرشان را افزایش می‌دهد.",
+  
+  // هشدارها و نکات پیشگیری
+  "صدای غیرعادی معمولاً نشانه مشکل است.",
+  "داغ شدن بیش از حد موتور می‌تواند ناشی از لقی یا روغن نامناسب باشد.",
+  "خرابی کوچک اگر نادیده گرفته شود، بزرگ می‌شود.",
+  "اتصال بد کابل یا سیم خطر پنهان ایجاد می‌کند.",
+  "اول ایمنی، بعد تعمیر."
+];
+
+
+
+const tip = tips[Math.floor(Math.random() * tips.length)];
+
+const alertBox = document.createElement("div");
+alertBox.className = "tech-alert";
+alertBox.innerHTML = `
+  <h4>نکته فنی</h4>
+  <p>${tip}</p>
+  <button>متوجه شدم</button>
+`;
+
+document.body.appendChild(alertBox);
+
+// نمایش با انیمیشن از پایین
+setTimeout(() => {
+  alertBox.classList.add("show");
+}, 100);
+
+alertBox.querySelector("button").onclick = () => {
+  alertBox.remove(); // فقط با کلیک بسته شود
+};
+</script>
+
+
 
 <!-- ================== TAB BUTTONS ================== -->
 <div class="top-panel-tabs">
