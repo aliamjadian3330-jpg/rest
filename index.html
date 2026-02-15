@@ -116,6 +116,7 @@ footer-links{
 <style>
 .tech-alert {
     position: fixed;
+    margin-bottom: 88px;
     bottom: 30px;
     right: 30px;
     width: 340px;
@@ -213,7 +214,7 @@ const tip = tips[Math.floor(Math.random() * tips.length)];
 const alertBox = document.createElement("div");
 alertBox.className = "tech-alert";
 alertBox.innerHTML = `
-  <h4>نکته فنی</h4>
+  <h4>آیا میدانید:</h4>
   <p>${tip}</p>
   <button>متوجه شدم</button>
 `;
