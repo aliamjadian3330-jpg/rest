@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="fa" dir="rtl" class="h-full">
  <head>
   <meta charset="UTF-8">
@@ -335,15 +335,34 @@
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full">
-  <div class="app-wrapper" id="appWrapper"><!-- Landing View -->
-   <div id="landingView" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:24px; text-align:center;">
-    <div class="car-icon">
-     🚗
-    </div>
-    <h1 id="appTitle" style="font-size:32px; font-weight:900; margin:16px 0 8px; background:linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">ناجی راه</h1>
-    <p style="color:rgba(255,255,255,0.5); margin-bottom:32px; font-size:15px;" id="appSubtitle">خودرو خود را قبل از سفر بررسی کنید</p><button class="btn-primary" id="startBtn" onclick="showChecklist()" style="font-size:18px; padding:16px 36px;"> 🚗 باز کردن چک‌لیست خودرو </button>
-    <div style="margin-top:40px; display:flex; gap:24px; color:rgba(255,255,255,0.3); font-size:13px;"><span>✅ ۸ دسته بررسی</span> <span>📋 ۲۰+ آیتم</span> <span>🛡️ ایمنی کامل</span>
-    </div>
+  <div id="landingView" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:24px; text-align:center;">
+  <img src="./logo7.png" style="width: 100px; background-color: #22c55e;border-radius:12px;" class="car-icon">
+
+  <h1 style="
+     
+      font-size:32px; 
+      font-weight:900; 
+      margin:16px 0 8px; 
+      background: linear-gradient(135deg, #06b6d4, #f59e0b); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      ">
+    حتما با ما
+  </h1>
+
+  <p style="color:rgba(255,255,255,0.8); margin-bottom:32px; font-size:15px;" id="appSubtitle">
+    خودرو خود را قبل از سفر بررسی کنید
+  </p>
+
+  <button class="btn-primary" id="startBtn" onclick="showChecklist()" style="font-size:18px; padding:16px 36px;"> باز کردن چک‌لیست خودرو </button>
+
+  <div style="margin-top:40px; display:flex; gap:24px; color:rgba(255,255,255,0.5); font-size:13px;">
+    <span>✅ ۸ دسته بررسی</span> 
+    <span>📋 ۲۰+ آیتم</span> 
+    <span>🛡️ ایمنی کامل</span>
+  </div>
+</div>
+
    </div><!-- Checklist View -->
    <div id="checklistView" style="display:none; padding:16px; max-width:640px; margin:0 auto;"><!-- Header -->
     <header style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding:16px 0;">
