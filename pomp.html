@@ -1,45 +1,35 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="fa" dir="rtl" class="h-full">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>محاسبه سوخت سفر</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     html, body { height: 100%; margin: 0; padding: 0; }
     * { font-family: 'Vazirmatn', sans-serif; box-sizing: border-box; }
 
-    :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --text-primary: #e2e8f0;
-      --text-secondary: rgba(226, 232, 240, 0.6);
-      --accent-primary: #06b6d4;
-      --accent-secondary: #f59e0b;
-    }
-
     body {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      overflow: hidden;
+      background: #0f172a;
+      color: #e2e8f0;
+      overflow-x: hidden;
     }
 
     .app-wrapper {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, #1a2d4d 100%);
-      background-attachment: fixed;
+      background: linear-gradient(135deg, #0f172a 0%, #1a2d4d 100%);
       overflow: auto;
     }
 
     .calc-card {
-      background: var(--bg-secondary);
+      background: #1e293b;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
       padding: 32px;
@@ -100,16 +90,17 @@
     .title {
       font-size: 26px;
       font-weight: 800;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      background: linear-gradient(135deg, #06b6d4, #f59e0b);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin: 0;
       line-height: 1.2;
     }
 
     .subtitle {
       font-size: 13px;
-      color: var(--text-secondary);
+      color: rgba(226, 232, 240, 0.6);
       margin: 6px 0 0;
     }
 
@@ -121,9 +112,8 @@
       display: block;
       font-size: 13px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #e2e8f0;
       margin-bottom: 8px;
-      text-transform: none;
     }
 
     .input-field {
@@ -132,7 +122,7 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
-      color: var(--text-primary);
+      color: #e2e8f0;
       font-family: 'Vazirmatn', sans-serif;
       font-size: 14px;
       transition: all 0.3s ease;
@@ -143,7 +133,7 @@
     .input-field:focus {
       outline: none;
       background: rgba(255, 255, 255, 0.08);
-      border-color: var(--accent-primary);
+      border-color: #06b6d4;
       box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
     }
 
@@ -154,357 +144,292 @@
     .button {
       width: 100%;
       padding: 14px 24px;
-      background: linear-gradient(135deg, var(--accent-primary), #0891b2);
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
       border: none;
       border-radius: 12px;
-      color: #0f172a;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
+      color: white;
       font-family: 'Vazirmatn', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 8px;
-      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
     }
 
     .button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(6, 182, 212, 0.4);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
     }
 
     .button:active {
       transform: translateY(0);
     }
 
-    .result-box {
+    .results {
       margin-top: 24px;
       padding: 20px;
-      background: rgba(6, 182, 212, 0.08);
+      background: rgba(6, 182, 212, 0.1);
       border: 1px solid rgba(6, 182, 212, 0.2);
       border-radius: 16px;
       display: none;
-      animation: slideDown 0.4s ease;
     }
 
-    .result-box.active {
+    .results.show {
       display: block;
+      animation: fadeIn 0.4s ease;
     }
 
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #06b6d4;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .result-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
     }
 
-    .result-item:last-child {
-      border-bottom: none;
-    }
-
-    .result-label {
-      color: var(--text-secondary);
-      font-weight: 500;
+    .result-item.full-width {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+      border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
     .result-value {
-      color: var(--accent-primary);
+      font-size: 22px;
       font-weight: 800;
-      font-size: 16px;
+      color: #f59e0b;
+      direction: ltr;
     }
 
-    .result-value.price {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 18px;
+    .result-label {
+      font-size: 11px;
+      color: rgba(226, 232, 240, 0.6);
+      margin-top: 4px;
     }
 
-    .error {
-      color: #ef4444;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 12px;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      border-radius: 10px;
+    .error-msg {
+      color: #f87171;
+      font-size: 12px;
+      margin-top: 6px;
       display: none;
-      animation: shake 0.4s ease;
     }
 
-    .error.show {
+    .error-msg.show {
       display: block;
     }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-4px); }
-      75% { transform: translateX(4px); }
-    }
-
-    .info-box {
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.2);
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 16px;
-      line-height: 1.6;
-    }
-
-    /* Scrollbar */
-    .app-wrapper::-webkit-scrollbar { width: 6px; }
-    .app-wrapper::-webkit-scrollbar-track { background: transparent; }
-    .app-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
-    .app-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-wrapper" id="appWrapper">
-   <div class="calc-card">
-    <div class="card-content">
-     <div class="header"><span class="icon">?</span>
-      <h1 id="appTitle" class="title">محاسبه سوخت سفر</h1>
-      <p class="subtitle">هزينه و مقدار سوخت مورد نياز را محاسبه کنيد</p>
-     </div>
-     <form id="calcForm" onsubmit="calculateFuel(event)">
-      <div class="form-group"><label class="label" id="distanceLabel">مسافت سفر (کيلومتر):</label> <input type="number" id="distance" class="input-field" placeholder="مثلاً 200" step="0.1" min="0" max="10000" required aria-label="مسافت سفر بر حسب کيلومتر">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="calc-card">
+      <div class="card-content">
+        <header class="header">
+          <span class="icon">⛽</span>
+          <h1 class="title" id="main-title">محاسبه سوخت سفر</h1>
+          <p class="subtitle" id="main-subtitle">برنامه‌ریزی هزینه سفر شما</p>
+        </header>
+
+        <form id="fuel-form">
+          <div class="form-group">
+            <label class="label" for="distance">مسافت (کیلومتر)</label>
+            <input type="number" id="distance" class="input-field" placeholder="مثال: 500" min="0" step="any" required>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="consumption">مصرف سوخت (لیتر در ۱۰۰ کیلومتر)</label>
+            <input type="number" id="consumption" class="input-field" placeholder="مثال: 8" min="0" step="any" required>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="price">قیمت هر لیتر سوخت (تومان)</label>
+            <input type="number" id="price" class="input-field" placeholder="مثال: 3000" min="0" step="any" required>
+          </div>
+
+          <button type="submit" class="button" id="calc-button">محاسبه کن</button>
+          <p class="error-msg" id="error-msg">لطفاً تمام فیلدها را با مقادیر معتبر پر کنید</p>
+        </form>
+
+        <div class="results" id="results">
+          <h3 class="result-title">📊 نتایج محاسبه</h3>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-value" id="total-fuel">0</div>
+              <div class="result-label">لیتر سوخت مورد نیاز</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value" id="fuel-per-100">0</div>
+              <div class="result-label">لیتر در هر ۱۰۰ کیلومتر</div>
+            </div>
+            <div class="result-item full-width">
+              <div class="result-value" id="total-cost">0</div>
+              <div class="result-label">💰 هزینه کل سوخت (تومان)</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="form-group"><label class="label" id="consumptionLabel">مصرف خودرو (ليتر در 100 کيلومتر):</label> <input type="number" id="consumption" class="input-field" placeholder="مثلاً 8" step="0.1" min="0.1" max="100" required aria-label="مصرف سوخت خودرو">
-      </div>
-      <div class="form-group"><label class="label" id="priceLabel">قيمت سوخت (تومان):</label> <input type="number" id="fuelPrice" class="input-field" placeholder="مثلاً 30000" step="100" min="0" max="500000" required aria-label="قيمت سوخت بر حسب تومان">
-      </div><button type="submit" class="button" id="calcButton">محاسبه کن</button>
-     </form>
-     <div class="error" id="errorMsg" role="alert"></div>
-     <div class="result-box" id="resultBox">
-      <div class="result-item"><span class="result-label">??? سوخت مورد نياز:</span> <span class="result-value" id="fuelNeededResult">? ليتر</span>
-      </div>
-      <div class="result-item"><span class="result-label">?? هزينه تقريبي:</span> <span class="result-value price" id="costResult">? تومان</span>
-      </div>
-      <div class="result-item" id="averageRow" style="display:none;"><span class="result-label">?? ميانگين مصرف:</span> <span class="result-value" id="averageResult">? ليتر/??? کيلومتر</span>
-      </div>
-     </div>
-     <div class="info-box"><strong>?? نکات مهم:</strong><br>
-       • مصرف سوخت بسته به رانندگي و شرايط جاده متفاوت است<br>
-       • براي سفرهاي بلند مسافتي ??? اضافي لحاظ کنيد<br>
-       • هزينه شامل جرائم و عوارض نيست
-     </div>
     </div>
-   </div>
   </div>
+
   <script>
-// Default config
-const defaultConfig = {
-  app_title: 'محاسبه سوخت سفر',
-  distance_label: 'مسافت سفر (کيلومتر):',
-  consumption_label: 'مصرف خودرو (ليتر در 100 کيلومتر):',
-  price_label: 'قيمت سوخت (تومان):',
-  calc_button_text: 'محاسبه کن',
-  bg_primary: '#0f172a',
-  bg_secondary: '#1e293b',
-  text_primary: '#e2e8f0',
-  accent_primary: '#06b6d4',
-  accent_secondary: '#f59e0b',
-  font_family: 'Vazirmatn',
-  font_size: 16
-};
+    const defaultConfig = {
+      title_text: 'محاسبه سوخت سفر',
+      subtitle_text: 'برنامه‌ریزی هزینه سفر شما',
+      calculate_button_text: 'محاسبه کن',
+      primary_color: '#06b6d4',
+      secondary_color: '#f59e0b',
+      background_color: '#0f172a',
+      card_color: '#1e293b',
+      text_color: '#e2e8f0'
+    };
 
-// Apply configuration
-function applyConfig(config) {
-  const bgPrimary = config.bg_primary || defaultConfig.bg_primary;
-  const bgSecondary = config.bg_secondary || defaultConfig.bg_secondary;
-  const textPrimary = config.text_primary || defaultConfig.text_primary;
-  const accentPrimary = config.accent_primary || defaultConfig.accent_primary;
-  const accentSecondary = config.accent_secondary || defaultConfig.accent_secondary;
-  const fontFamily = config.font_family || defaultConfig.font_family;
-  const fontSize = config.font_size || defaultConfig.font_size;
+    let config = { ...defaultConfig };
 
-  document.documentElement.style.setProperty('--bg-primary', bgPrimary);
-  document.documentElement.style.setProperty('--bg-secondary', bgSecondary);
-  document.documentElement.style.setProperty('--text-primary', textPrimary);
-  document.documentElement.style.setProperty('--accent-primary', accentPrimary);
-  document.documentElement.style.setProperty('--accent-secondary', accentSecondary);
+    // Format number with Persian/Arabic digits and comma separators
+    function formatNumber(num) {
+      return Math.round(num).toLocaleString('fa-IR');
+    }
 
-  document.body.style.background = bgPrimary;
-  document.body.style.color = textPrimary;
+    function formatDecimal(num, decimals = 1) {
+      return num.toLocaleString('fa-IR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
 
-  const fontStack = `${fontFamily}, Vazirmatn, sans-serif`;
-  document.body.style.fontFamily = fontStack;
+    // Calculate fuel
+    function calculateFuel() {
+      const distance = parseFloat(document.getElementById('distance').value);
+      const consumption = parseFloat(document.getElementById('consumption').value);
+      const price = parseFloat(document.getElementById('price').value);
 
-  // Update text content
-  const titleEl = document.getElementById('appTitle');
-  if (titleEl) {
-    titleEl.textContent = config.app_title || defaultConfig.app_title;
-    titleEl.style.fontFamily = fontStack;
-    titleEl.style.fontSize = `${fontSize * 1.625}px`;
-  }
+      const errorMsg = document.getElementById('error-msg');
+      const results = document.getElementById('results');
 
-  const distanceLabelEl = document.getElementById('distanceLabel');
-  if (distanceLabelEl) {
-    distanceLabelEl.textContent = config.distance_label || defaultConfig.distance_label;
-  }
-
-  const consumptionLabelEl = document.getElementById('consumptionLabel');
-  if (consumptionLabelEl) {
-    consumptionLabelEl.textContent = config.consumption_label || defaultConfig.consumption_label;
-  }
-
-  const priceLabelEl = document.getElementById('priceLabel');
-  if (priceLabelEl) {
-    priceLabelEl.textContent = config.price_label || defaultConfig.price_label;
-  }
-
-  const buttonEl = document.getElementById('calcButton');
-  if (buttonEl) {
-    buttonEl.textContent = config.calc_button_text || defaultConfig.calc_button_text;
-  }
-}
-
-// Initialize SDK
-if (window.elementSdk) {
-  window.elementSdk.init({
-    defaultConfig,
-    onConfigChange: async (config) => {
-      applyConfig(config);
-    },
-    mapToCapabilities: (config) => ({
-      recolorables: [
-        {
-          get: () => config.bg_primary || defaultConfig.bg_primary,
-          set: (v) => {
-            config.bg_primary = v;
-            window.elementSdk.setConfig({ bg_primary: v });
-          }
-        },
-        {
-          get: () => config.bg_secondary || defaultConfig.bg_secondary,
-          set: (v) => {
-            config.bg_secondary = v;
-            window.elementSdk.setConfig({ bg_secondary: v });
-          }
-        },
-        {
-          get: () => config.text_primary || defaultConfig.text_primary,
-          set: (v) => {
-            config.text_primary = v;
-            window.elementSdk.setConfig({ text_primary: v });
-          }
-        },
-        {
-          get: () => config.accent_primary || defaultConfig.accent_primary,
-          set: (v) => {
-            config.accent_primary = v;
-            window.elementSdk.setConfig({ accent_primary: v });
-          }
-        },
-        {
-          get: () => config.accent_secondary || defaultConfig.accent_secondary,
-          set: (v) => {
-            config.accent_secondary = v;
-            window.elementSdk.setConfig({ accent_secondary: v });
-          }
-        }
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => config.font_family || defaultConfig.font_family,
-        set: (v) => {
-          config.font_family = v;
-          window.elementSdk.setConfig({ font_family: v });
-        }
-      },
-      fontSizeable: {
-        get: () => config.font_size || defaultConfig.font_size,
-        set: (v) => {
-          config.font_size = v;
-          window.elementSdk.setConfig({ font_size: v });
-        }
+      if (isNaN(distance) || isNaN(consumption) || isNaN(price) || distance <= 0 || consumption <= 0 || price <= 0) {
+        errorMsg.classList.add('show');
+        results.classList.remove('show');
+        return;
       }
-    }),
-    mapToEditPanelValues: (config) => new Map([
-      ['app_title', config.app_title || defaultConfig.app_title],
-      ['distance_label', config.distance_label || defaultConfig.distance_label],
-      ['consumption_label', config.consumption_label || defaultConfig.consumption_label],
-      ['price_label', config.price_label || defaultConfig.price_label],
-      ['calc_button_text', config.calc_button_text || defaultConfig.calc_button_text]
-    ])
-  });
-}
 
-applyConfig(defaultConfig);
+      errorMsg.classList.remove('show');
 
-// Convert to Persian numerals
-function toPersianNum(num) {
-  const persianDigits = ['?', '?', '?', '?', '?', '?', '?', '?', '?', '?'];
-  return String(num).replace(/\d/g, d => persianDigits[d]);
-}
+      const totalFuel = (distance * consumption) / 100;
+      const totalCost = totalFuel * price;
 
-// Format currency
-function formatCurrency(num) {
-  return toPersianNum(Math.round(num).toLocaleString('en-US'));
-}
+      document.getElementById('total-fuel').textContent = formatDecimal(totalFuel);
+      document.getElementById('fuel-per-100').textContent = formatDecimal(consumption);
+      document.getElementById('total-cost').textContent = formatNumber(totalCost);
 
-// Main calculation
-function calculateFuel(event) {
-  event.preventDefault();
+      results.classList.add('show');
+    }
 
-  const distance = parseFloat(document.getElementById('distance').value);
-  const consumption = parseFloat(document.getElementById('consumption').value);
-  const fuelPrice = parseFloat(document.getElementById('fuelPrice').value);
-  const errorEl = document.getElementById('errorMsg');
-  const resultBox = document.getElementById('resultBox');
+    // Form submission
+    document.getElementById('fuel-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      calculateFuel();
+    });
 
-  // Validation
-  if (isNaN(distance) || isNaN(consumption) || isNaN(fuelPrice)) {
-    errorEl.textContent = '?? لطفاً همه مقادير را درست وارد کنيد';
-    errorEl.classList.add('show');
-    resultBox.classList.remove('active');
-    return;
-  }
+    // Render UI based on config
+    async function onConfigChange(cfg) {
+      config = { ...defaultConfig, ...cfg };
 
-  if (distance <= 0 || consumption <= 0 || fuelPrice <= 0) {
-    errorEl.textContent = '?? تمام مقادير بايد بزرگتر از صفر باشند';
-    errorEl.classList.add('show');
-    resultBox.classList.remove('active');
-    return;
-  }
+      document.getElementById('main-title').textContent = config.title_text || defaultConfig.title_text;
+      document.getElementById('main-subtitle').textContent = config.subtitle_text || defaultConfig.subtitle_text;
+      document.getElementById('calc-button').textContent = config.calculate_button_text || defaultConfig.calculate_button_text;
+    }
 
-  errorEl.classList.remove('show');
+    // Map to capabilities
+    function mapToCapabilities(cfg) {
+      return {
+        recolorables: [
+          {
+            get: () => cfg.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => cfg.card_color || defaultConfig.card_color,
+            set: (value) => {
+              config.card_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ card_color: value });
+            }
+          },
+          {
+            get: () => cfg.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => cfg.primary_color || defaultConfig.primary_color,
+            set: (value) => {
+              config.primary_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ primary_color: value });
+            }
+          },
+          {
+            get: () => cfg.secondary_color || defaultConfig.secondary_color,
+            set: (value) => {
+              config.secondary_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ secondary_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => cfg.font_family || 'Vazirmatn',
+          set: (value) => {
+            config.font_family = value;
+            if (window.elementSdk) window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => cfg.font_size || 16,
+          set: (value) => {
+            config.font_size = value;
+            if (window.elementSdk) window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
 
-  // Calculations
-  const fuelNeeded = (distance * consumption) / 100;
-  const totalCost = fuelNeeded * fuelPrice;
-  const costPerKm = totalCost / distance;
+    // Map to edit panel values
+    function mapToEditPanelValues(cfg) {
+      return new Map([
+        ['title_text', cfg.title_text || defaultConfig.title_text],
+        ['subtitle_text', cfg.subtitle_text || defaultConfig.subtitle_text],
+        ['calculate_button_text', cfg.calculate_button_text || defaultConfig.calculate_button_text]
+      ]);
+    }
 
-  // Update result
-  document.getElementById('fuelNeededResult').textContent = toPersianNum(fuelNeeded.toFixed(2)) + ' ليتر';
-  document.getElementById('costResult').textContent = formatCurrency(totalCost) + ' تومان';
-  document.getElementById('averageResult').textContent = toPersianNum(consumption.toFixed(2)) + ' ليتر/??? کيلومتر';
-
-  resultBox.classList.add('active');
-}
-
-// Allow Enter key to submit
-document.getElementById('calcForm').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    calculateFuel(e);
-  }
-});
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ce8448147e8d243',t:'MTc3MTE5NDgxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    } else {
+      onConfigChange(defaultConfig);
+    }
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cef29d2024fedda',t:'MTc3MTI2NzEyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
