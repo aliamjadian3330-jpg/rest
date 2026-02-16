@@ -1,0 +1,1112 @@
+﻿<!doctype html>
+<html lang="fa" dir="rtl" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>یادآوری سرویس خودرو</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    * { font-family: 'Vazirmatn', sans-serif; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #e2e8f0;
+      --text-secondary: rgba(226, 232, 240, 0.6);
+      --accent-primary: #06b6d4;
+      --accent-secondary: #f59e0b;
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .app-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #1a2d4d 100%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 24px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header-icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 12px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .app-title {
+      font-size: 28px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+      white-space: nowrap;
+      font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-primary);
+      color: #0f172a;
+      border-color: var(--accent-primary);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-card {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--accent-primary);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .input-field, .select-field {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .input-field:focus, .select-field:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    }
+
+    .input-field::placeholder {
+      color: rgba(226, 232, 240, 0.3);
+    }
+
+    .date-input-wrapper {
+      position: relative;
+    }
+
+    .date-input-wrapper::after {
+      content: '📅';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 16px;
+    }
+
+    .input-field.date-input {
+      padding-left: 36px;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .button {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, var(--accent-primary), #0891b2);
+      border: none;
+      border-radius: 12px;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      font-family: 'Vazirmatn', sans-serif;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(6, 182, 212, 0.4);
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .button-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .reminder-list {
+      display: none;
+    }
+
+    .reminder-list.active {
+      display: block;
+    }
+
+    .reminder-card {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      border-right: 4px solid var(--accent-primary);
+    }
+
+    .reminder-card.urgent {
+      border-right-color: #ef4444;
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .reminder-card.completed {
+      border-right-color: #22c55e;
+      background: rgba(34, 197, 94, 0.05);
+      opacity: 0.7;
+    }
+
+    .reminder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .reminder-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .reminder-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    .badge-pending {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-primary);
+    }
+
+    .badge-urgent {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      animation: pulse 2s infinite;
+    }
+
+    .badge-completed {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .reminder-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .reminder-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-small {
+      flex: 1;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .btn-small:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-delete {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+
+    .btn-delete:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-complete {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.3);
+      color: #22c55e;
+    }
+
+    .btn-complete:hover {
+      background: rgba(34, 197, 94, 0.25);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .stats-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--accent-primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .success-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #22c55e;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 200;
+      transition: transform 0.4s;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .success-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .limit-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: var(--accent-secondary);
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .limit-warning.show {
+      display: block;
+    }
+
+    /* Scrollbar */
+    .app-wrapper::-webkit-scrollbar { width: 6px; }
+    .app-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .app-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+    .app-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper" id="appWrapper">
+   <div class="container"><!-- Header -->
+    <div class="header"><span class="header-icon">🚗</span>
+     <h1 id="appTitle" class="app-title">ثبت یادآوری سرویس خودرو</h1>
+    </div><!-- Tabs -->
+    <div class="tabs"><button class="tab-btn active" onclick="switchTab('form')" id="formTab" aria-label="رفتن به فرم"> ➕ افزودن یادآوری </button> <button class="tab-btn" onclick="switchTab('list')" id="listTab" aria-label="مشاهده یادآوری‌ها"> 📋 یادآوری‌های ثبت شده </button>
+    </div><!-- Form Tab -->
+    <div id="formView" class="form-view">
+     <div class="error-message" id="errorMsg"></div>
+     <div class="limit-warning" id="limitWarning">
+      ⚠️ شما به حد نهایی (۹۹۹ یادآوری) رسیده‌اید. برای افزودن یادآوری جدید، ابتدا یادآوری‌های قدیمی را حذف کنید.
+     </div>
+     <div class="form-card">
+      <h2 id="formTitle" class="form-title">افزودن یادآوری جدید</h2>
+      <form id="reminderForm" onsubmit="handleFormSubmit(event)">
+       <div class="form-group"><label class="label">نام و نام خانوادگی</label> <input type="text" id="fullName" class="input-field" placeholder="مثال: علی محمدی" required>
+       </div>
+       <div class="form-group"><label class="label">شماره تلفن</label> <input type="tel" id="phone" class="input-field" placeholder="مثال: 09121234567" required>
+       </div>
+       <div class="form-group"><label class="label">مدل خودرو</label> <input type="text" id="carModel" class="input-field" placeholder="مثال: توyota کرولا ۲۰۲۳" required>
+       </div>
+       <div class="form-group"><label class="label">کیلومتر فعلی</label> <input type="number" id="currentKM" class="input-field" placeholder="مثال: 50000" min="0" required>
+       </div>
+       <div class="form-group"><label class="label">نوع سرویس</label> <select id="serviceType" class="select-field" required> <option value="">انتخاب کنید...</option> <option>روغن موتور</option> <option>تسمه تایم</option> <option>چک دوره‌ای</option> <option>تعویض لنت</option> <option>باتری</option> <option>تایر</option> <option>فیلتر هوا</option> <option>فیلتر روغن</option> <option>سیستم ترمز</option> <option>جلوبندی</option> <option>تعویض شمع</option> <option>تعویض روغن گیربکس</option> <option>تعویض مایع خنک‌کننده</option> <option>سرویس کولر</option> <option>سایر</option> </select>
+       </div>
+       <div class="form-group"><label class="label">تاریخ سرویس بعدی (شمسی)</label>
+        <div class="date-input-wrapper"><input type="text" id="nextServiceDate" class="input-field date-input" placeholder="مثال: ۱۴۰۳/۰۲/۱۵" required>
+        </div>
+       </div><button type="submit" class="button" id="submitBtn"> <span id="submitText">ثبت یادآوری</span> </button>
+      </form>
+     </div>
+    </div><!-- List Tab -->
+    <div id="listView" class="reminder-list">
+     <div class="stats-box" id="statsBox"></div>
+     <div id="remindersList" class="reminders-container"></div>
+     <div class="empty-state" id="emptyState">
+      <div class="empty-icon">
+       📭
+      </div>
+      <div class="empty-text">
+       هیچ یادآوری ثبت نشده است
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Success Toast -->
+  <div class="success-toast" id="successToast"></div>
+  <script>
+// ====== PERSIAN CALENDAR CONVERSION ======
+class PersianCalendar {
+  static toPersian(gregorianDate) {
+    if (typeof gregorianDate === 'string') {
+      gregorianDate = new Date(gregorianDate);
+    }
+    const gy = gregorianDate.getFullYear();
+    const gm = gregorianDate.getMonth() + 1;
+    const gd = gregorianDate.getDate();
+
+    let jy, jm, jd;
+    const g_d_n = 365 * gy + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) + gd;
+
+    for (jy = -61; jy <= 30; jy++) {
+      const j_d_n = 365 * jy + Math.floor((jy + 3) / 4) - Math.floor((jy + 99) / 100) + Math.floor((jy + 399) / 400) + 1;
+      if (g_d_n < j_d_n) {
+        jy--;
+        break;
+      }
+    }
+
+    const j_d_n = 365 * jy + Math.floor((jy + 3) / 4) - Math.floor((jy + 99) / 100) + Math.floor((jy + 399) / 400) + 1;
+    const s = g_d_n - j_d_n;
+    let leap = 0;
+    if (jy % 4 === 0 && (jy % 100 !== 0 || jy % 400 === 0)) leap = 1;
+
+    const months = [0, 31, 31 + 28 + leap, 31 + 31 + 28 + leap, 31 + 31 + 30 + 28 + leap, 31 + 31 + 30 + 31 + 28 + leap, 31 + 31 + 30 + 31 + 30 + 28 + leap, 31 + 31 + 30 + 31 + 30 + 31 + 28 + leap, 31 + 31 + 30 + 31 + 30 + 31 + 31 + 28 + leap, 31 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 28 + leap, 31 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 28 + leap, 31 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 28 + leap];
+
+    for (jm = 0; jm < months.length; jm++) {
+      if (s < months[jm]) break;
+    }
+    jd = s - months[jm - 1] + 1;
+    return { year: jy, month: jm, day: jd };
+  }
+
+  static toGregorian(persianYear, persianMonth, persianDay) {
+    const jy = persianYear;
+    const jm = persianMonth;
+    const jd = persianDay;
+
+    let leap = 0;
+    if ((jy + 1474) % 2820 % 128 % 33 % 4 === 1 && ((jy + 1474) % 2820 % 128 % 33) !== 33) {
+      leap = 1;
+    }
+
+    const j_d_n = 365 * jy + Math.floor((jy + 3) / 4) - Math.floor((jy + 99) / 100) + Math.floor((jy + 399) / 400);
+
+    let jm_days = 0;
+    for (let i = 1; i < jm; i++) {
+      if (i <= 6) jm_days += 31;
+      else if (i <= 11) jm_days += 30;
+      else jm_days += (leap === 1 ? 30 : 29);
+    }
+
+    const g_d_n = j_d_n + jm_days + jd;
+
+    let gy = 400 * Math.floor(g_d_n / 146097);
+    let gd = g_d_n % 146097;
+
+    let flag = true;
+    if (gd >= 36525) {
+      gd--;
+      gy += 100 * Math.floor(gd / 36524);
+      gd %= 36524;
+      if (gd >= 365) gd++;
+      flag = false;
+    }
+
+    gy += 4 * Math.floor(gd / 1461);
+    gd %= 1461;
+
+    if (flag && gd >= 366) {
+      gd--;
+      gy += Math.floor(gd / 365);
+      gd = gd % 365;
+    }
+
+    const months = [0, 31, 31 + (gy % 4 === 0 ? 29 : 28), 31 + (gy % 4 === 0 ? 29 : 28) + 31, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31 + 30, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31 + 30 + 31, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31 + 30 + 31 + 31, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31 + 30 + 31 + 31 + 30, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31, 31 + (gy % 4 === 0 ? 29 : 28) + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30];
+
+    let gm = 0;
+    for (let i = 0; i < months.length; i++) {
+      if (gd < months[i]) {
+        gm = i;
+        break;
+      }
+    }
+    const gd_final = gd - months[gm - 1] + 1;
+
+    return new Date(gy, gm - 1, gd_final);
+  }
+
+  static formatShamsi(date) {
+    const p = this.toPersian(date);
+    const y = String(p.year).padStart(4, '۰').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const m = String(p.month).padStart(2, '۰').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const d = String(p.day).padStart(2, '۰').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    return `${y}/${m}/${d}`;
+  }
+
+  static parseShamsi(shamsiStr) {
+    const parts = shamsiStr.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).split('/');
+    if (parts.length !== 3) return null;
+    const year = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const day = parseInt(parts[2]);
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+    return this.toGregorian(year, month, day);
+  }
+}
+
+// ====== CONFIG ======
+const defaultConfig = {
+  app_title: 'ثبت یادآوری سرویس خودرو',
+  form_title: 'افزودن یادآوری جدید',
+  bg_primary: '#0f172a',
+  bg_secondary: '#1e293b',
+  text_primary: '#e2e8f0',
+  accent_primary: '#06b6d4',
+  accent_secondary: '#f59e0b',
+  font_family: 'Vazirmatn',
+  font_size: 16
+};
+
+// ====== STATE ======
+let reminders = [];
+let currentTab = 'form';
+
+// Apply config
+function applyConfig(config) {
+  const bgPrimary = config.bg_primary || defaultConfig.bg_primary;
+  const bgSecondary = config.bg_secondary || defaultConfig.bg_secondary;
+  const textPrimary = config.text_primary || defaultConfig.text_primary;
+  const accentPrimary = config.accent_primary || defaultConfig.accent_primary;
+  const accentSecondary = config.accent_secondary || defaultConfig.accent_secondary;
+  const fontFamily = config.font_family || defaultConfig.font_family;
+  const fontSize = config.font_size || defaultConfig.font_size;
+
+  document.documentElement.style.setProperty('--bg-primary', bgPrimary);
+  document.documentElement.style.setProperty('--bg-secondary', bgSecondary);
+  document.documentElement.style.setProperty('--text-primary', textPrimary);
+  document.documentElement.style.setProperty('--accent-primary', accentPrimary);
+  document.documentElement.style.setProperty('--accent-secondary', accentSecondary);
+
+  document.body.style.background = bgPrimary;
+  document.body.style.color = textPrimary;
+
+  const fontStack = `${fontFamily}, Vazirmatn, sans-serif`;
+  document.body.style.fontFamily = fontStack;
+
+  const titleEl = document.getElementById('appTitle');
+  if (titleEl) {
+    titleEl.textContent = config.app_title || defaultConfig.app_title;
+    titleEl.style.fontFamily = fontStack;
+    titleEl.style.fontSize = `${fontSize * 1.75}px`;
+  }
+
+  const formTitleEl = document.getElementById('formTitle');
+  if (formTitleEl) {
+    formTitleEl.textContent = config.form_title || defaultConfig.form_title;
+  }
+}
+
+// SDK Init
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => {
+      applyConfig(config);
+    },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        {
+          get: () => config.bg_primary || defaultConfig.bg_primary,
+          set: (v) => { config.bg_primary = v; window.elementSdk.setConfig({ bg_primary: v }); }
+        },
+        {
+          get: () => config.bg_secondary || defaultConfig.bg_secondary,
+          set: (v) => { config.bg_secondary = v; window.elementSdk.setConfig({ bg_secondary: v }); }
+        },
+        {
+          get: () => config.text_primary || defaultConfig.text_primary,
+          set: (v) => { config.text_primary = v; window.elementSdk.setConfig({ text_primary: v }); }
+        },
+        {
+          get: () => config.accent_primary || defaultConfig.accent_primary,
+          set: (v) => { config.accent_primary = v; window.elementSdk.setConfig({ accent_primary: v }); }
+        },
+        {
+          get: () => config.accent_secondary || defaultConfig.accent_secondary,
+          set: (v) => { config.accent_secondary = v; window.elementSdk.setConfig({ accent_secondary: v }); }
+        }
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => config.font_family || defaultConfig.font_family,
+        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => config.font_size || defaultConfig.font_size,
+        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['app_title', config.app_title || defaultConfig.app_title],
+      ['form_title', config.form_title || defaultConfig.form_title]
+    ])
+  });
+}
+
+applyConfig(defaultConfig);
+
+// ====== DATA SDK HANDLER ======
+const dataHandler = {
+  onDataChanged(data) {
+    reminders = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    renderRemindersList();
+  }
+};
+
+// Initialize Data SDK
+async function initDataSDK() {
+  const result = await window.dataSdk.init(dataHandler);
+  if (!result.isOk) {
+    console.error('Failed to init Data SDK');
+  }
+}
+
+initDataSDK();
+
+// ====== TAB SWITCHING ======
+function switchTab(tab) {
+  currentTab = tab;
+  const formView = document.getElementById('formView');
+  const listView = document.getElementById('listView');
+  const formTab = document.getElementById('formTab');
+  const listTab = document.getElementById('listTab');
+
+  if (tab === 'form') {
+    formView.style.display = 'block';
+    listView.style.display = 'none';
+    formTab.classList.add('active');
+    listTab.classList.remove('active');
+  } else {
+    formView.style.display = 'none';
+    listView.style.display = 'block';
+    formTab.classList.remove('active');
+    listTab.classList.add('active');
+  }
+}
+
+// ====== FORM HANDLERS ======
+async function handleFormSubmit(event) {
+  event.preventDefault();
+  const errorMsg = document.getElementById('errorMsg');
+  const limitWarning = document.getElementById('limitWarning');
+  const submitBtn = document.getElementById('submitBtn');
+
+  errorMsg.classList.remove('show');
+  errorMsg.textContent = '';
+
+  if (reminders.length >= 999) {
+    limitWarning.classList.add('show');
+    return;
+  } else {
+    limitWarning.classList.remove('show');
+  }
+
+  const fullName = document.getElementById('fullName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const carModel = document.getElementById('carModel').value.trim();
+  const currentKM = parseInt(document.getElementById('currentKM').value);
+  const serviceType = document.getElementById('serviceType').value;
+  const nextServiceDateInput = document.getElementById('nextServiceDate').value.trim();
+
+  if (!fullName || !phone || !carModel || !currentKM || !serviceType || !nextServiceDateInput) {
+    errorMsg.textContent = '⚠️ لطفاً تمام فیلدها را پر کنید';
+    errorMsg.classList.add('show');
+    return;
+  }
+
+  // Parse Persian date
+  const gregorianDate = PersianCalendar.parseShamsi(nextServiceDateInput);
+  if (!gregorianDate) {
+    errorMsg.textContent = '⚠️ تاریخ معتبر نیست. لطفاً از فرمت ۱۴۰۳/۰۲/۱۵ استفاده کنید';
+    errorMsg.classList.add('show');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="loading-spinner"></span>درحال ثبت...';
+
+  const reminderData = {
+    full_name: fullName,
+    phone: phone,
+    car_model: carModel,
+    current_km: currentKM,
+    service_type: serviceType,
+    next_service_date: nextServiceDateInput,
+    created_at: new Date().toISOString(),
+    status: 'pending'
+  };
+
+  const result = await window.dataSdk.create(reminderData);
+
+  submitBtn.disabled = false;
+  submitBtn.innerHTML = '<span id="submitText">ثبت یادآوری</span>';
+
+  if (result.isOk) {
+    document.getElementById('reminderForm').reset();
+    showToast('✅ یادآوری با موفقیت ثبت شد');
+  } else {
+    errorMsg.textContent = '❌ خطا در ثبت یادآوری. لطفاً دوباره تلاش کنید';
+    errorMsg.classList.add('show');
+  }
+}
+
+// ====== REMINDERS LIST ======
+function renderRemindersList() {
+  const container = document.getElementById('remindersList');
+  const emptyState = document.getElementById('emptyState');
+  const statsBox = document.getElementById('statsBox');
+
+  if (reminders.length === 0) {
+    container.innerHTML = '';
+    emptyState.style.display = 'block';
+    statsBox.innerHTML = '';
+    return;
+  }
+
+  emptyState.style.display = 'none';
+
+  // Stats
+  const pending = reminders.filter(r => r.status === 'pending').length;
+  const completed = reminders.filter(r => r.status === 'completed').length;
+  const urgent = reminders.filter(r => isUrgent(r.next_service_date)).length;
+
+  statsBox.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-number">${reminders.length}</div>
+      <div class="stat-label">کل یادآوری</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">${pending}</div>
+      <div class="stat-label">در انتظار</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">${urgent}</div>
+      <div class="stat-label">فوری</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">${completed}</div>
+      <div class="stat-label">انجام شده</div>
+    </div>
+  `;
+
+  // Reminders
+  container.innerHTML = reminders.map(reminder => {
+    const status = reminder.status === 'completed' ? 'completed' : isUrgent(reminder.next_service_date) ? 'urgent' : 'pending';
+    const statusText = status === 'completed' ? '✓ انجام شد' : status === 'urgent' ? '⚠️ فوری' : '◯ در انتظار';
+    const badgeClass = `badge-${status}`;
+    const cardClass = status;
+
+    return `
+      <div class="reminder-card ${cardClass}" data-id="${reminder.__backendId}">
+        <div class="reminder-header">
+          <div class="reminder-title">${escapeHtml(reminder.car_model)}</div>
+          <span class="reminder-badge ${badgeClass}">${statusText}</span>
+        </div>
+        <div class="reminder-info">
+          <div class="info-item">
+            <div class="info-label">👤 نام</div>
+            <div class="info-value">${escapeHtml(reminder.full_name)}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">📱 تلفن</div>
+            <div class="info-value">${escapeHtml(reminder.phone)}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">🔧 سرویس</div>
+            <div class="info-value">${escapeHtml(reminder.service_type)}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">🛣️ کیلومتر</div>
+            <div class="info-value">${reminder.current_km.toLocaleString()}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">📅 تاریخ</div>
+            <div class="info-value">${reminder.next_service_date}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">⏱️ ثبت شده</div>
+            <div class="info-value">${PersianCalendar.formatShamsi(reminder.created_at)}</div>
+          </div>
+        </div>
+        <div class="reminder-actions">
+          ${reminder.status === 'completed' ? '' : `<button class="btn-small btn-complete" onclick="markComplete('${reminder.__backendId}')">✓ انجام شد</button>`}
+          <button class="btn-small btn-delete" onclick="deleteReminder('${reminder.__backendId}')">🗑️ حذف</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ====== ACTIONS ======
+async function markComplete(id) {
+  const reminder = reminders.find(r => r.__backendId === id);
+  if (!reminder) return;
+
+  reminder.status = 'completed';
+  const result = await window.dataSdk.update(reminder);
+
+  if (!result.isOk) {
+    showToast('❌ خطا در بروزرسانی');
+  }
+}
+
+async function deleteReminder(id) {
+  const reminder = reminders.find(r => r.__backendId === id);
+  if (!reminder) return;
+
+  // Inline confirmation
+  const card = document.querySelector(`[data-id="${id}"]`);
+  const actions = card.querySelector('.reminder-actions');
+  const originalContent = actions.innerHTML;
+
+  actions.innerHTML = `
+    <button class="btn-small" onclick="confirmDelete('${id}')" style="background:rgba(239,68,68,0.25); color:#ef4444;">✓ تأیید حذف</button>
+    <button class="btn-small" onclick="cancelDelete('${id}')" style="background:rgba(255,255,255,0.06);">✕ انصراف</button>
+  `;
+
+  window.confirmDelete = async function(confirmId) {
+    const remindersToDelete = reminders.find(r => r.__backendId === confirmId);
+    const deleteResult = await window.dataSdk.delete(remindersToDelete);
+
+    if (deleteResult.isOk) {
+      showToast('✅ یادآوری حذف شد');
+    } else {
+      showToast('❌ خطا در حذف');
+    }
+  };
+
+  window.cancelDelete = function(cancelId) {
+    const card = document.querySelector(`[data-id="${cancelId}"]`);
+    if (card) {
+      card.querySelector('.reminder-actions').innerHTML = originalContent;
+    }
+  };
+}
+
+// ====== HELPERS ======
+function isUrgent(shamsiDate) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const serviceDate = PersianCalendar.parseShamsi(shamsiDate);
+  if (!serviceDate) return false;
+  const daysUntil = (serviceDate - today) / (1000 * 60 * 60 * 24);
+  return daysUntil <= 7 && daysUntil >= 0;
+}
+
+function escapeHtml(text) {
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+function showToast(message) {
+  const toast = document.getElementById('successToast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const firebaseConfig = {
+    apiKey: "API_KEY_HERE",
+    authDomain: "PROJECT_ID.firebaseapp.com",
+    projectId: "PROJECT_ID",
+    storageBucket: "PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const messaging = firebase.messaging();
+
+  // درخواست اجازه نوتیفیکیشن
+  async function initPush() {
+    try {
+      await Notification.requestPermission();
+      const token = await messaging.getToken({ vapidKey: 'VAPID_KEY_HERE' });
+      console.log('FCM Token:', token);
+      localStorage.setItem('fcmToken', token);
+    } catch (e) {
+      console.error('FCM Init Error:', e);
+    }
+  }
+
+  // وقتی فرم ثبت شد
+  const originalHandleFormSubmit = handleFormSubmit;
+  handleFormSubmit = async function(e) {
+    await originalHandleFormSubmit(e);
+    // ثبت پوش بعد از موفقیت
+    await initPush();
+  };
+
+  // Service Worker register
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(() => console.log('SW registered'))
+      .catch(e => console.error('SW registration failed', e));
+  }
+
+
+
+
+
+
+
+
+// ====== PUSH NOTIFICATIONS LOCAL ======
+async function showLocalNotification(title, body) {
+  if (Notification.permission === "granted") {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration) {
+      registration.showNotification(title, {
+        body,
+        icon: '/icon.png',
+        tag: 'car-service-reminder',
+        renotify: true
+      });
+    }
+  }
+}
+
+// بررسی روزانه یادآوری‌ها
+function checkRemindersForNotifications() {
+  if (!('Notification' in window)) return;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  reminders.forEach(reminder => {
+    if (reminder.status === 'pending') {
+      const serviceDate = PersianCalendar.parseShamsi(reminder.next_service_date);
+      if (!serviceDate) return;
+      const diffDays = Math.round((serviceDate - today) / (1000*60*60*24));
+      
+      // اگر کمتر از 7 روز تا سرویس مونده باشه
+      if (diffDays <= 7 && diffDays >= 0) {
+        const title = 'یادآوری سرویس خودرو';
+        const body = `${reminder.car_model} - ${reminder.service_type} در ${reminder.next_service_date}`;
+        showLocalNotification(title, body);
+      }
+    }
+  });
+}
+
+// درخواست اجازه نوتیفیکیشن هنگام بارگذاری سایت
+window.addEventListener('load', async () => {
+  if (Notification.permission !== "granted") {
+    await Notification.requestPermission();
+  }
+
+  // چک اول
+  checkRemindersForNotifications();
+
+  // چک هر 12 ساعت
+  setInterval(checkRemindersForNotifications, 1000 * 60 * 60 * 12);
+});
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
+
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ce84ec9c458d243',t:'MTc3MTE5NTIzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
