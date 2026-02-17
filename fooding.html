@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarRequest Pro | درخواست خودرو</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { 
+      font-family: 'DM Sans', sans-serif; 
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #16213e 100%);
+      overflow-x: hidden; 
+      color: #fff; 
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%), 
+                  radial-gradient(circle at 80% 80%, rgba(150, 100, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #app { position: relative; z-index: 1; }
+
+    /* Premium Glass */
+    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(30px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .glass:hover { border-color: rgba(0, 212, 255, 0.4); }
+    
+    .card-premium { 
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); 
+      backdrop-filter: blur(30px) saturate(180%); 
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-premium::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-premium:hover::before { left: 100%; }
+    .card-premium:hover { border-color: rgba(0, 212, 255, 0.6); box-shadow: 0 20px 60px rgba(0, 212, 255, 0.25); }
+    
+    .btn-primary { 
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); 
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+      font-weight: 700; 
+      letter-spacing: 1px; 
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.4s ease;
+    }
+
+    .btn-primary:hover:not(:disabled)::before { left: 100%; }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0, 212, 255, 0.5); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .input-field { 
+      background: rgba(255, 255, 255, 0.06); 
+      border: 2px solid rgba(255, 255, 255, 0.1); 
+      color: white; 
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .input-field::placeholder { color: rgba(255, 255, 255, 0.3); }
+    .input-field:focus { 
+      border-color: #00d4ff; 
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), inset 0 0 10px rgba(0, 212, 255, 0.1); 
+      background: rgba(0, 212, 255, 0.05); 
+      outline: none; 
+    }
+    .input-field option { background: #0a0e27; color: white; }
+
+    .section-title { 
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem; 
+      font-weight: 900; 
+      background: linear-gradient(135deg, #00d4ff 0%, #00ffff 50%, #0099cc 100%); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      background-clip: text; 
+      letter-spacing: -2px;
+      line-height: 1.1;
+    }
+
+    .subtitle { 
+      font-size: 1.2rem; 
+      color: rgba(255, 255, 255, 0.5); 
+      font-weight: 300; 
+      letter-spacing: 0.5px;
+    }
+
+    .toast { animation: slideInLeft 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes slideInLeft { from { transform: translateX(100%); opacity:0;} to { transform: translateX(0); opacity:1;} }
+
+    .loading-spinner { display:inline-block; width:18px; height:18px; border:3px solid rgba(255,255,255,0.2); border-radius:50%; border-top-color:#00d4ff; border-right-color:#00d4ff; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg);} }
+
+    .request-card { animation: slideInRight 0.5s cubic-bezier(0.34,1.56,0.64,1); border-right: 5px solid #00d4ff; }
+    @keyframes slideInRight { from { transform: translateX(-100%); opacity:0;} to { transform: translateX(0); opacity:1;} }
+
+    .badge { 
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); 
+      padding: 0.7rem 1.3rem; 
+      border-radius: 50px; 
+      font-size: 0.75rem; 
+      font-weight: 700; 
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+    }
+    .badge.buy { background: linear-gradient(135deg, #ff6b35 0%, #ff4500 100%); box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4); }
+    .badge.sell { background: linear-gradient(135deg, #00ffff 0%, #00d4ff 100%); }
+
+    .menu-item { transition: all 0.3s ease; border-right: 4px solid transparent; padding-right: 1rem !important; }
+    .menu-item:hover { background: rgba(0, 212, 255, 0.15); border-right-color: #00d4ff; }
+
+    .menu-badge { background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4); }
+
+    .form-group { animation: fadeInUp 0.6s ease forwards; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .form-group:nth-child(1) { animation-delay: 0.05s; }
+    .form-group:nth-child(2) { animation-delay: 0.1s; }
+    .form-group:nth-child(3) { animation-delay: 0.15s; }
+    .form-group:nth-child(4) { animation-delay: 0.2s; }
+    .form-group:nth-child(5) { animation-delay: 0.25s; }
+    .form-group:nth-child(6) { animation-delay: 0.3s; }
+    .form-group:nth-child(7) { animation-delay: 0.35s; }
+
+    .label-text { 
+      font-weight: 700; 
+      font-size: 0.98rem; 
+      color: rgba(255, 255, 255, 0.95); 
+      letter-spacing: 0.4px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .empty-state { animation: fadeIn 0.8s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .stat-box { 
+      text-align: center; 
+      padding: 2.5rem; 
+      border-radius: 1.5rem; 
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.12) 0%, rgba(0, 212, 255, 0.05) 100%);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .stat-box:hover { 
+      border-color: rgba(0, 212, 255, 0.6); 
+      box-shadow: 0 15px 50px rgba(0, 212, 255, 0.3);
+      transform: translateY(-8px);
+    }
+
+    .stat-number { 
+      font-size: 3.5rem; 
+      font-weight: 900; 
+      color: #00d4ff;
+      font-family: 'Poppins', sans-serif;
+      text-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+      letter-spacing: -1px;
+    }
+    .stat-label { 
+      font-size: 0.95rem; 
+      color: rgba(255, 255, 255, 0.55); 
+      margin-top: 1rem;
+      letter-spacing: 0.4px;
+      font-weight: 500;
+    }
+
+    .delete-btn { 
+      background: rgba(255, 107, 53, 0.15); 
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+    }
+    .delete-btn:hover { 
+      background: rgba(255, 107, 53, 0.3); 
+      color: #ff6b35;
+      border-color: rgba(255, 107, 53, 0.5);
+      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+    }
+
+    header { animation: slideDown 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+
+    .menu-header-btn { 
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
+    }
+    .menu-header-btn:hover { 
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4); 
+      transform: translateY(-3px);
+    }
+
+    /* Decorative Elements */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float { 
+      0%, 100% { transform: translateY(0px); } 
+      50% { transform: translateY(-20px); } 
+    }
+  </style>
+</head>
+<body class="h-full overflow-auto">
+
+<div id="app" class="h-full min-h-screen py-12 px-4 md:px-8">
+
+  <!-- Decorative Orbs -->
+  <div class="glow-orb" style="width: 300px; height: 300px; top: -150px; left: -150px; animation-delay: 0s;"></div>
+  <div class="glow-orb" style="width: 200px; height: 200px; bottom: 100px; right: -100px; animation-delay: 2s;"></div>
+
+  <!-- Header -->
+  <header class="max-w-5xl mx-auto mb-16">
+    <div class="flex items-start justify-between gap-6">
+      <div class="flex-1">
+        <h1 class="section-title mb-3">CarRequest Pro</h1>
+        <p class="subtitle">مدیریت حرفه‌ای درخواست خرید و فروش خودرو</p>
+      </div>
+      <div class="relative flex-shrink-0">
+        <button id="menuBtn" class="glass menu-header-btn rounded-full p-4 hover:bg-opacity-20 transition transform hover:scale-110">
+          <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+        <div id="menuDropdown" class="hidden absolute left-0 mt-4 w-80 glass rounded-3xl z-50 overflow-hidden shadow-2xl">
+          <div class="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 p-6 text-white">
+            <h3 class="font-bold text-xl flex items-center gap-3">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              منو سریع
+            </h3>
+          </div>
+          <div class="p-4 space-y-2">
+            <button onclick="scrollToForm()" class="menu-item w-full text-right px-5 py-4 rounded-xl flex items-center gap-4 hover:bg-opacity-20 transition">
+              <svg class="w-6 h-6 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              <div class="text-right flex-1">
+                <p class="font-bold text-cyan-100 text-sm">درخواست جدید</p>
+                <p class="text-xs text-cyan-300">فرم خالی را باز کنید</p>
+              </div>
+            </button>
+            <button onclick="scrollToRequests()" class="menu-item w-full text-right px-5 py-4 rounded-xl flex items-center gap-4 hover:bg-opacity-20 transition">
+              <div class="menu-badge text-white rounded-full w-10 h-10 flex items-center justify-center text-sm font-bold flex-shrink-0" id="requestCount">0</div>
+              <div class="text-right flex-1">
+                <p class="font-bold text-cyan-100 text-sm">درخواست‌های من</p>
+                <p class="text-xs text-cyan-300">تمام درخواست‌ها</p>
+              </div>
+            </button>
+            <div class="border-t border-white border-opacity-10 my-3"></div>
+            <button onclick="clearForm()" class="menu-item w-full text-right px-5 py-4 rounded-xl flex items-center gap-4 hover:bg-red-500 hover:bg-opacity-15 transition">
+              <svg class="w-6 h-6 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              <div class="text-right flex-1">
+                <p class="font-bold text-red-300 text-sm">پاک کردن فرم</p>
+                <p class="text-xs text-red-300 text-opacity-70">تمام فیلدها</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats Section -->
+  <div class="max-w-5xl mx-auto mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="stat-box">
+        <div class="stat-number" id="statTotal">0</div>
+        <div class="stat-label">درخواست ثبت شده</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="statBuy">0</div>
+        <div class="stat-label">درخواست خرید</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="statSell">0</div>
+        <div class="stat-label">درخواست فروش</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div id="formSection" class="max-w-3xl mx-auto mb-20">
+    <div class="card-premium rounded-3xl p-8 md:p-12">
+      <h2 class="text-2xl font-bold mb-10 text-cyan-400 flex items-center gap-3">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        ثبت درخواست جدید
+      </h2>
+      <form id="carForm" class="space-y-6">
+        <div class="form-group">
+          <label class="block mb-3 label-text">👤 نام شما *</label>
+          <input type="text" name="name" required placeholder="نام و نام خانوادگی خود را وارد کنید" class="input-field w-full px-5 py-3 rounded-xl outline-none text-white">
+        </div>
+        <div class="form-group">
+          <label class="block mb-3 label-text">📞 شماره تماس *</label>
+          <input type="tel" name="phone" required placeholder="09123456789" class="input-field w-full px-5 py-3 rounded-xl outline-none text-white">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-group">
+            <label class="block mb-3 label-text">🎯 نوع درخواست *</label>
+            <select name="type" required class="input-field w-full px-5 py-3 rounded-xl outline-none text-white cursor-pointer">
+              <option value="">انتخاب کنید...</option>
+              <option value="buy">🛒 خرید خودرو</option>
+              <option value="sell">💰 فروش خودرو</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="block mb-3 label-text">💵 بودجه / قیمت (تومان) *</label>
+            <input type="text" name="budget" required placeholder="مثال: 350000000" class="input-field w-full px-5 py-3 rounded-xl outline-none text-white">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="block mb-3 label-text">🚗 مدل خودرو</label>
+          <input type="text" name="model" placeholder="مثال: پژو 206 تیپ 5 یا BMW X5" class="input-field w-full px-5 py-3 rounded-xl outline-none text-white">
+        </div>
+        <div class="form-group">
+          <label class="block mb-3 label-text">📝 توضیحات بیشتر</label>
+          <textarea name="notes" rows="4" placeholder="توضیحات اضافی درباره خودروی خود (رنگ، مسافت‌رفتگی، شرایط، غیره)" class="input-field w-full px-5 py-3 rounded-xl outline-none text-white resize-none"></textarea>
+        </div>
+        <div class="form-group pt-4">
+          <button type="submit" class="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-3 text-white text-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            <span id="submitText">ثبت درخواست</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Requests Section -->
+  <div id="requestsSection" class="max-w-3xl mx-auto pb-12">
+    <h2 class="text-2xl font-bold mb-10 text-cyan-400 flex items-center gap-3">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+      </svg>
+      درخواست‌های شما
+    </h2>
+    <div id="requestsList" class="space-y-5">
+      <div class="card-premium rounded-2xl p-12 text-center empty-state">
+        <svg class="w-24 h-24 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <p class="text-2xl font-bold text-cyan-300">هنوز درخواستی ثبت نشده</p>
+        <p class="text-gray-400 mt-3">درخواست‌های شما پس از ثبت در اینجا نمایش داده می‌شوند</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-8 left-8 z-50 space-y-4"></div>
+
+</div>
+
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw2Zr_z6hh1E5arDHi6G8XotwAjRTXFGbS1ulxNtdpkOqDo_CA_G7Me-93x3xJ20FWQ7Q/exec";
+let allRequests = JSON.parse(localStorage.getItem('carRequests') || '[]');
+let isLoading = false;
+
+// Menu Functionality
+document.getElementById('menuBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('menuDropdown').classList.toggle('hidden');
+});
+
+document.addEventListener('click', () => {
+  document.getElementById('menuDropdown').classList.add('hidden');
+});
+
+function scrollToForm() {
+  document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('menuDropdown').classList.add('hidden');
+  setTimeout(() => document.getElementById('carForm').querySelector('input[name="name"]').focus(), 600);
+}
+
+function scrollToRequests() {
+  document.getElementById('requestsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('menuDropdown').classList.add('hidden');
+}
+
+function clearForm() {
+  document.getElementById('carForm').reset();
+  document.getElementById('menuDropdown').classList.add('hidden');
+  showToast('✓ فرم پاک شد', 'success');
+}
+
+function showToast(message, type='success'){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  const bgColor = type==='success' ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gradient-to-r from-red-500 to-rose-600';
+  toast.className = `toast px-8 py-4 rounded-2xl shadow-2xl text-white font-bold ${bgColor}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(()=>toast.remove(), 4500);
+}
+
+function updateStats() {
+  const total = allRequests.length;
+  const buy = allRequests.filter(r => r.type === 'buy').length;
+  const sell = allRequests.filter(r => r.type === 'sell').length;
+  
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statBuy').textContent = buy;
+  document.getElementById('statSell').textContent = sell;
+  document.getElementById('requestCount').textContent = total;
+}
+
+function renderRequests() {
+  const container = document.getElementById('requestsList');
+  updateStats();
+  
+  if (allRequests.length === 0) {
+    container.innerHTML = `
+      <div class="card-premium rounded-2xl p-12 text-center empty-state">
+        <svg class="w-24 h-24 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <p class="text-2xl font-bold text-cyan-300">هنوز درخواستی ثبت نشده</p>
+        <p class="text-gray-400 mt-3">درخواست‌های شما پس از ثبت در اینجا نمایش داده می‌شوند</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = allRequests.map((req, idx) => `
+    <div class="request-card card-premium rounded-2xl p-8 md:p-10">
+      <div class="flex justify-between items-start mb-6 gap-4">
+        <span class="badge ${req.type}">
+          ${req.type === 'buy' ? '🛒 خرید' : '💰 فروش'}
+        </span>
+        <button onclick="deleteRequest(${idx})" class="delete-btn text-red-400 hover:text-red-300 p-3 rounded-xl transition flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm mb-6">
+        <div class="space-y-3">
+          <p><span class="text-cyan-300 font-bold">👤 نام:</span> <span class="text-gray-200">${req.name}</span></p>
+          <p><span class="text-cyan-300 font-bold">📞 تماس:</span> <span class="text-gray-200 dir-ltr inline-block">${req.phone}</span></p>
+        </div>
+        <div class="space-y-3">
+          <p><span class="text-cyan-300 font-bold">💰 بودجه:</span> <span class="text-gray-200">${req.budget} تومان</span></p>
+          ${req.model ? `<p><span class="text-cyan-300 font-bold">🚗 مدل:</span> <span class="text-gray-200">${req.model}</span></p>` : ''}
+        </div>
+      </div>
+      ${req.notes ? `<div class="mt-6 p-4 bg-white bg-opacity-5 rounded-xl border-r-3 border-cyan-500"><p class="text-sm text-cyan-300 font-bold mb-2">📝 توضیحات:</p><p class="text-sm text-gray-300 leading-relaxed">${req.notes}</p></div>` : ''}
+      <p class="text-xs text-gray-500 mt-6 pt-4 border-t border-white border-opacity-5">📅 ${req.date}</p>
+    </div>
+  `).join('');
+}
+
+function deleteRequest(index) {
+  allRequests.splice(index, 1);
+  localStorage.setItem('carRequests', JSON.stringify(allRequests));
+  renderRequests();
+  showToast('✓ درخواست حذف شد!', 'success');
+}
+
+document.getElementById("carForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  
+  if (isLoading) return;
+  
+  isLoading = true;
+  const form = this;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<div class="loading-spinner"></div> <span>ثبت درحال...</span>';
+
+  const formData = {
+    name: form.name.value.trim(),
+    phone: form.phone.value.trim(),
+    budget: form.budget.value.trim(),
+    type: form.type.value,
+    model: form.model.value.trim(),
+    notes: form.notes.value.trim(),
+    date: new Date().toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  };
+
+  allRequests.push(formData);
+  localStorage.setItem('carRequests', JSON.stringify(allRequests));
+  renderRequests();
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(formData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    showToast("✓ درخواست با موفقیت ثبت شد!", 'success');
+    form.reset();
+  })
+  .catch(error => {
+    console.error(error);
+    showToast("✓ درخواست ذخیره شد (آفلاین)", 'success');
+  })
+  .finally(() => {
+    isLoading = false;
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            <span id="submitText">ثبت درخواست</span>`;
+  });
+});
+
+renderRequests();
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cf3a2b602b79171',t:'MTc3MTMxNDAxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
